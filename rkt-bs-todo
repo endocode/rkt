@@ -38,9 +38,6 @@
   make V=3 would print everything, raw
   other options: V=silent, V=info?, V=all, V=raw
 
-- add checks for perl version and used modules (Capture::Tiny).
-  if deps generation is rewritten then this point is obsolete
-
 - replace flavor dangling symlinks with one line files
   dangling symlinks are potentially confusing for make
 
@@ -64,4 +61,9 @@
 - fix make check so it can run short tests without requiring building stage1
   currently, as a workaround, we can configure a project with --with-stage1=none
 
-- bail out configure when stage1 is none but we tried to enable functional tests
+- bail out configure when stage1 is none and no linker flags are
+  passed but we tried to enable functional tests
+
+- refactor git cloning and running autogen, configure and make into
+  something in makelib
+  will be used later by dbus
