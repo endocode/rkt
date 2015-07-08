@@ -27,12 +27,6 @@ git clean -ffdx                    # Post Thread
 
 Select `Ubuntu 14.04 LTS v1503 (beta with Docker support)`.
 
-### Environment variables
-
-```
-RKT_ENABLE_FUNCTIONAL_TESTS=true
-```
-
 ## CircleCI
 
 Ideally the tests will also run on [CircleCI](https://circleci.com), but there is currently a known issue because access to the cgroup filesystems is restricted - more info [here](https://github.com/coreos/rkt/issues/600#issuecomment-87655911)
