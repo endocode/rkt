@@ -161,6 +161,13 @@ AC_SUBST(RKT_RUN_FUNCTIONAL_TESTS)
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
+AC_PROG_MKDIR_P
+AC_PROG_LN_S
+AC_PROG_SED
+AC_PROG_GREP
+AC_PROG_AWK
+AC_CHECK_TOOL([FILE], [file], [])
+AS_VAR_IF([FILE], [], [AC_MSG_ERROR([*** file program not found])])
 
 RKT_REQ_PROG([GIT],[git],[git])
 RKT_REQ_PROG([GOBINARY],[go],[go])
