@@ -61,6 +61,9 @@ $(eval _TST_ESCAPED_SRCDIR_ := $(subst .,\.,$(_TST_ESCAPED_SRCDIR_))) \
 $(eval _TST_ESCAPED_SRCDIR_ := $(subst /,\/,$(_TST_ESCAPED_SRCDIR_))) \
 $(eval _TST_SPACE_ := ) \
 $(eval _TST_SPACE_ += ) \
+$(eval $(info MK_TOPLEVEL_ABS_SRCDIR = $(MK_TOPLEVEL_ABS_SRCDIR))) \
+$(eval $(info _TST_ESCAPED_SRCDIR_ = $(_TST_ESCAPED_SRCDIR_))) \
+$(eval $(info GO_FILES = $(shell $(GO_ENV) "$(GO)" list -f '{{.ImportPath}} {{.$2}}' $1))) \
 $(eval _TST_FILES_ := $(shell $(GO_ENV) "$(GO)" list -f '{{.ImportPath}} {{.$2}}' $1 | \
         grep --invert-match '\[\]' | \
         sed -e 's/.*$(_TST_ESCAPED_SRCDIR_)\///' -e 's/[[:space:]]*\[.*\]$$//' \
