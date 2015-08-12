@@ -50,17 +50,18 @@ which will instead be appended to the preceding image app's exec arguments.
 End the image arguments with a lone "---" to resume argument parsing.`,
 		Run: runWrapper(runRun),
 	}
-	flagStage1Image string
-	flagVolumes     volumeList
-	flagPorts       portList
-	flagPrivateNet  common.PrivateNetList
-	flagInheritEnv  bool
-	flagExplicitEnv envMap
-	flagInteractive bool
-	flagNoOverlay   bool
-	flagLocal       bool
-	flagPodManifest string
-	flagMDSRegister bool
+	flagStage1Image  string
+	flagVolumes      volumeList
+	flagPorts        portList
+	flagPrivateNet   common.PrivateNetList
+	flagPrivateUsers bool
+	flagInheritEnv   bool
+	flagExplicitEnv  envMap
+	flagInteractive  bool
+	flagNoOverlay    bool
+	flagLocal        bool
+	flagPodManifest  string
+	flagMDSRegister  bool
 )
 
 func init() {
@@ -81,6 +82,7 @@ func init() {
 	cmdRun.Flags().Lookup("private-net").NoOptDefVal = "all"
 	cmdRun.Flags().BoolVar(&flagInheritEnv, "inherit-env", false, "inherit all environment variables not set by apps")
 	cmdRun.Flags().BoolVar(&flagNoOverlay, "no-overlay", false, "disable overlay filesystem")
+	cmdRun.Flags().BoolVar(&flagPrivateUsers, "private-users", false, "Run within user namespaces.")
 	cmdRun.Flags().Var(&flagExplicitEnv, "set-env", "an environment variable to set for apps in the form name=value")
 	cmdRun.Flags().BoolVar(&flagInteractive, "interactive", false, "run pod interactively. If true, only one image may be supplied.")
 	cmdRun.Flags().BoolVar(&flagLocal, "local", false, "use only local images (do not discover or download from remote URLs)")
@@ -137,10 +139,14 @@ func getStage1Hash(s *store.Store, stage1ImagePath string) (*types.Hash, error) 
 }
 
 func runRun(cmd *cobra.Command, args []string) (exit int) {
+	var privateUsers string = ""
 	err := parseApps(&rktApps, args, cmd.Flags(), true)
 	if err != nil {
 		stderr("run: error parsing app image arguments: %v", err)
 		return 1
+	}
+
+	if flagPrivateUsers && common.SupportsUserNS() {
 	}
 
 	if len(flagPorts) > 0 && !flagPrivateNet.Any() {
@@ -233,6 +239,7 @@ func runRun(cmd *cobra.Command, args []string) (exit int) {
 	pcfg := stage0.PrepareConfig{
 		CommonConfig: cfg,
 		UseOverlay:   !flagNoOverlay && common.SupportsOverlay(),
+		PrivateUsers: privateUsers,
 	}
 
 	if len(flagPodManifest) > 0 {
